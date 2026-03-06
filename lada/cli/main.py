@@ -155,6 +155,16 @@ def setup_argparser() -> argparse.ArgumentParser:
     group_general.add_argument(
         "--help", action="store_true", help=_("Show this help message and exit")
     )
+    group_general.add_argument(
+        "--torch-compile",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help=_(
+            "Use torch.compile to optimize the restoration model. "
+            "The first clip will be slower due to compilation, but "
+            "subsequent clips may be faster. (default: %(default)s)"
+        ),
+    )
 
     export = parser.add_argument_group(_("Export"))
     export.add_argument(
@@ -512,6 +522,7 @@ def main():
         mosaic_detection_model_path,
         args.fp16,
         args.detect_face_mosaics,
+        compile_model=args.torch_compile,
     )
 
     input_files, output_files = utils.setup_input_and_output_paths(
